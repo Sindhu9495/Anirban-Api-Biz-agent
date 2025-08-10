@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import './Healthcare.css';
-import Navbar from './Navbar';
 import { ChatContext } from './ChatContext';
 
 const prompts = [
