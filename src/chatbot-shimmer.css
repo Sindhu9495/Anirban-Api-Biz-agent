@@ -1,0 +1,37 @@
+
+.typing-shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0;
+  margin-left: 45px;
+}
+
+.shimmer-line {
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d3d3d3 25%, #a3b9ff 50%, #d3d3d3 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.shimmer-1 {
+  width: 90%;
+}
+
+.shimmer-2 {
+  width: 95%;
+}
+
+.shimmer-3 {
+  width: 70%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

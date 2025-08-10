@@ -1,0 +1,21 @@
+{
+  "meta_joined": "Agentforce joined",
+  "bot_intro": "Hi, I'm Agentforce, an AI agent that can answer your Salesforce questions and connect you with our Sales Experts. This experience, powered entirely by Agentforce, keeps improving daily! Ask me things like, 'Can I chat with a Sales Expert?' or 'What is CRM?'",
+  "bot_buttons": [
+    "Connect me with a sales rep",
+    "Show me an Agentforce demo",
+    "How can Salesforce help my business"
+  ],
+  "demo_response": "You can watch the demo for Agentforce <a href=\"https://example.com\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.",
+  "error_response": "Sorry, I couldn't process that. Please try again.",
+  "default_reply": "Sorry, I could not get a response.",
+  "bot_typing": "Agentforce is typing...",
+  "placeholder": "Message Agentforce",
+  "button_label": "Ask Agentforce",
+  "header_title": "Agentforce",
+  "header_info": "This tool uses generative AI, which can produce inaccurate or harmful responses. Learn more.",
+  "header_more": "More options coming soon.",
+  "heading_question": "How can",
+  "heading_bot_name": "Agentforce",
+  "heading_suffix": "help?"
+}
