@@ -50,7 +50,7 @@ const formatBotReply = (text) => {
   const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
   const headers = {
     'Content-Type': 'application/json',
-   // 'x-sf-token': 'Bearer 00DOz00000AARBq!AQEAQCKDSmIYDke2rI_s5IQF5HJc_2LF51ZrZdSOEeAPpXpilDyABaYm.2R2cJV1LNm9g36IbFskhYh8AO7Xb.6qpnJ7wY8r'
+   'x-sf-token': 'Bearer 552a73ba-62dd-4472-b3c6-240711042720269'
   };
  
   const healthcareKeywords = [
