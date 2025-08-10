@@ -1,10 +1,12 @@
 // Chatbot.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import './Chatbot.css';
 import strings from './chatbotStrings.json';
 import Healthcare from './Healthcare';
-import { ChatContext } from './ChatContext';
+
+// Removed unused import
+// import { ChatContext } from './ChatContext';
 
 // Move apiUrl and headers outside component so they're defined before usage
 const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
@@ -18,12 +20,12 @@ const healthcareKeywords = [
   'hcp', 'healthcare', 'clinical', 'medical', 'prescriber', 'conference', 'symptom', 'treatment',
 ];
 
+// Move these helpers outside component so they don't change on every render
+const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+const formatBotReply = (text) => `<p>${text}</p>`;
+
 const Chatbot = () => {
-  const getTime = () =>
-    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  const formatBotReply = (text) => `<p>${text}</p>`;
-
   const [triggeredPrompt, setTriggeredPrompt] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -70,7 +72,7 @@ const Chatbot = () => {
     }
   };
 
-  const handleBotResponse = async (userMessage) => {
+  const handleBotResponse = useCallback(async (userMessage) => {
     setIsLoading(true);
 
     try {
@@ -82,7 +84,7 @@ const Chatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -164,7 +166,7 @@ const Chatbot = () => {
       handleBotResponse(userMessage);
       setTriggeredPrompt(null); // reset after handling
     }
-  }, [triggeredPrompt]);
+  }, [triggeredPrompt, handleBotResponse]);
 
   const togglePopup = () => setIsOpen(!isOpen);
   const toggleExpand = () => setIsExpanded(!isExpanded);
