@@ -37,7 +37,6 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Wrap in useCallback to fix dependency warning in useEffect below
   const handleBotResponse = useCallback(async (userMessage) => {
     setIsLoading(true);
     try {
@@ -105,7 +104,6 @@ const Chatbot = () => {
     await handleBotResponse(userMessage);
   };
 
-  // useEffect with handleBotResponse dependency
   useEffect(() => {
     if (triggeredPrompt) {
       const time = getTime();
