@@ -6,20 +6,15 @@ import strings from './chatbotStrings.json';
 import Healthcare from './Healthcare';
 import { ChatContext } from './ChatContext';
 
- 
 const Chatbot = () => {
   const getTime = () =>
     new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
- 
-const formatBotReply = (text) => {
-  return `
-   
-      ${text}
-  `;
-};
- 
- const [triggeredPrompt, setTriggeredPrompt] = useState(null);
 
+  const formatBotReply = (text) => {
+    return `\n\n${text}`;
+  };
+
+  const [triggeredPrompt, setTriggeredPrompt] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState([
@@ -31,36 +26,21 @@ const formatBotReply = (text) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showHealthcareUI, setShowHealthcareUI] = useState(false);
   const messagesEndRef = useRef(null);
-  const handleBotResponse = async (userMessage) => {
-  setIsLoading(true);
 
-  try {
-    const response = await axios.post(apiUrl, { prompt: userMessage }, { headers });
-    const botReply = formatBotReply(response.data.answer || strings.default_reply);
-    setMessages((prev) => [...prev, { type: 'bot', text: botReply, timestamp: getTime() }]);
-  } catch (error) {
-    setMessages((prev) => [...prev, { type: 'bot', text: formatBotReply(strings.error_response), timestamp: getTime() }]);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
- 
- 
   const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
   const headers = {
     'Content-Type': 'application/json',
-   'x-sf-token': 'Bearer 552a73ba-62dd-4472-b3c6-240711042720269'
+    'api_token': '552a73ba-62dd-4472-b3c6-240711042720269'
   };
- 
+
   const healthcareKeywords = [
     'hcp', 'healthcare', 'clinical', 'medical', 'prescriber', 'conference', 'symptom', 'treatment',
   ];
- 
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
- 
+
   const preparePrompt = () =>
     messages
       .filter((m) => m.type === 'user' || m.type === 'bot')
@@ -70,7 +50,7 @@ const formatBotReply = (text) => {
           : `Agentforce: ${m.text.replace(/<[^>]+>/g, '')}`
       )
       .join('\n');
- 
+
   const registerMCPChannel = async () => {
     const endpoint = 'https://200ok-mcp-e6drfqhhewfjhwhk.canadacentral-01.azurewebsites.net/200OK/MCP/register-channel';
     const body = {
@@ -78,7 +58,7 @@ const formatBotReply = (text) => {
       Description: 'Gets weather information using external API',
       Type: 'etl',
     };
- 
+
     try {
       const response = await axios.post(endpoint, body, { headers: { 'Content-Type': 'application/json' } });
       const resultText = `✅ Channel registered successfully:\n${JSON.stringify(response.data, null, 2)}`;
@@ -89,32 +69,16 @@ const formatBotReply = (text) => {
       setMessages((prev) => [...prev, { type: 'bot', text: formatBotReply(resultText), timestamp: getTime() }]);
     }
   };
- 
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const time = getTime();
-    const userMessage = input;
-    setInput('');
-    setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
+
+  const handleBotResponse = async (userMessage) => {
     setIsLoading(true);
- 
-    const isHealthcareQuery = healthcareKeywords.some((word) =>
-      userMessage.toLowerCase().includes(word)
-    );
-    if (isHealthcareQuery) {
-      setShowHealthcareUI(true);
-      setIsLoading(false);
-      return;
-    }
- 
-    if (userMessage.toLowerCase().includes('register mcp')) {
-      await registerMCPChannel();
-      setIsLoading(false);
-      return;
-    }
- 
     try {
-      const response = await axios.post(apiUrl, { prompt: userMessage }, { headers });
+      const response = await axios.post(apiUrl, {
+        configAiName: "OpenAI",
+        promptQuery: userMessage,
+        dataSourceApiName: "Order_&_Invoice_Details"
+      }, { headers });
+
       const botReply = formatBotReply(response.data.answer || strings.default_reply);
       setMessages((prev) => [...prev, { type: 'bot', text: botReply, timestamp: getTime() }]);
     } catch (error) {
@@ -123,24 +87,63 @@ const formatBotReply = (text) => {
       setIsLoading(false);
     }
   };
- 
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+    const time = getTime();
+    const userMessage = input;
+    setInput('');
+    setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
+    setIsLoading(true);
+
+    const isHealthcareQuery = healthcareKeywords.some((word) =>
+      userMessage.toLowerCase().includes(word)
+    );
+    if (isHealthcareQuery) {
+      setShowHealthcareUI(true);
+      setIsLoading(false);
+      return;
+    }
+
+    if (userMessage.toLowerCase().includes('register mcp')) {
+      await registerMCPChannel();
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post(apiUrl, {
+        configAiName: "OpenAI",
+        promptQuery: userMessage,
+        dataSourceApiName: "Order_&_Invoice_Details"
+      }, { headers });
+
+      const botReply = formatBotReply(response.data.answer || strings.default_reply);
+      setMessages((prev) => [...prev, { type: 'bot', text: botReply, timestamp: getTime() }]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { type: 'bot', text: formatBotReply(strings.error_response), timestamp: getTime() }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleButtonClick = async (text) => {
     const time = getTime();
     setMessages((prev) => [...prev, { type: 'user', text, timestamp: time }]);
     setIsLoading(true);
- 
+
     if (healthcareKeywords.some((word) => text.toLowerCase().includes(word))) {
       setShowHealthcareUI(true);
       setIsLoading(false);
       return;
     }
- 
+
     if (text.toLowerCase().includes('register mcp')) {
       await registerMCPChannel();
       setIsLoading(false);
       return;
     }
- 
+
     try {
       if (text === strings.bot_buttons[1]) {
         setMessages((prev) => [
@@ -149,7 +152,12 @@ const formatBotReply = (text) => {
         ]);
       } else {
         const prompt = preparePrompt() + `\nUser: ${text}\nAgentforce:`;
-        const response = await axios.post(apiUrl, { prompt }, { headers });
+        const response = await axios.post(apiUrl, {
+          configAiName: "OpenAI",
+          promptQuery: prompt,
+          dataSourceApiName: "Order_&_Invoice_Details"
+        }, { headers });
+
         const botReply = formatBotReply(
           response.data?.message ||
           `You selected: ${text}. Let me assist you with that.`
@@ -168,30 +176,30 @@ const formatBotReply = (text) => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
-  if (triggeredPrompt) {
-    const time = getTime();
-    const userMessage = triggeredPrompt;
+    if (triggeredPrompt) {
+      const time = getTime();
+      const userMessage = triggeredPrompt;
 
-    setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
-    handleBotResponse(userMessage);
-    setTriggeredPrompt(null); // reset after handling
-  }
-}, [triggeredPrompt]);
-
+      setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
+      handleBotResponse(userMessage);
+      setTriggeredPrompt(null);
+    }
+  }, [triggeredPrompt]);
 
   const togglePopup = () => setIsOpen(!isOpen);
   const toggleExpand = () => setIsExpanded(!isExpanded);
- 
+
   if (showHealthcareUI) return <Healthcare />;
- 
+
   return (
     <>
       <button className="chatbot-toggle-button" onClick={togglePopup}>
         <img src="/bot-avatar.png" alt="Agentforce Bot" className="toggle-icon" />
         {strings.button_label}
       </button>
- 
+
       {isOpen && (
         <div className={`chatbot-popup ${isExpanded ? 'expanded' : ''}`}>
           <div className="chatbot-header">
@@ -203,14 +211,14 @@ const formatBotReply = (text) => {
               <button title="Minimize" onClick={togglePopup}>—</button>
             </div>
           </div>
- 
+
           <div className="chatbot-body">
             <h2>
               {strings.heading_question}{' '}
               <span className="highlight">{strings.heading_bot_name}</span>{' '}
               {strings.heading_suffix}
             </h2>
- 
+
             <div className="chatbot-messages">
               {messages.map((msg, i) => (
                 <div key={i} className={`chatbot-message ${msg.type}`}>
@@ -219,28 +227,27 @@ const formatBotReply = (text) => {
                       {msg.text} <span className="timestamp">{msg.timestamp}</span>
                     </div>
                   )}
- 
+
                   {msg.type === 'bot' && (
-  <div className="chatbot-message bot">
-    <div className="bot-avatar-wrapper">
-      <img src="/bot-avatar.png" className="avatar" alt="Bot" />
-    </div>
-    <div
-      className="message-bubble bot-bubble"
-      dangerouslySetInnerHTML={{ __html: msg.text }}
-    />
-    <div className="timestamp bot-timestamp-left">{msg.timestamp}</div>
-  </div>
-)}
- 
- 
+                    <div className="chatbot-message bot">
+                      <div className="bot-avatar-wrapper">
+                        <img src="/bot-avatar.png" className="avatar" alt="Bot" />
+                      </div>
+                      <div
+                        className="message-bubble bot-bubble"
+                        dangerouslySetInnerHTML={{ __html: msg.text }}
+                      />
+                      <div className="timestamp bot-timestamp-left">{msg.timestamp}</div>
+                    </div>
+                  )}
+
                   {msg.type === 'user' && (
                     <div className="chatbot-message user">
                       <div className="message-bubble user-bubble">{msg.text}</div>
                       <div className="timestamp">Sent: {msg.timestamp}</div>
                     </div>
                   )}
- 
+
                   {msg.type === 'bot-buttons' && (
                     <div className="chatbot-message bot-buttons">
                       {msg.buttons.map((btnText, idx) => (
@@ -253,25 +260,25 @@ const formatBotReply = (text) => {
                   )}
                 </div>
               ))}
- 
-             {isLoading && (
-  <div className="chatbot-message bot shimmer-loader">
-    <div className="bot-avatar-wrapper">
-      <img src="/bot-avatar.png" className="avatar" alt="Bot" />
-    </div>
-    <div className="message-bubble shimmer-bubble">
-      <div className="shimmer-bar shimmer-bar-1"></div>
-      <div className="shimmer-bar shimmer-bar-2"></div>
-      <div className="shimmer-bar shimmer-bar-3"></div>
-    </div>
-    <div className="timestamp bot-timestamp-left">{getTime()}</div>
-  </div>
-)}
+
+              {isLoading && (
+                <div className="chatbot-message bot shimmer-loader">
+                  <div className="bot-avatar-wrapper">
+                    <img src="/bot-avatar.png" className="avatar" alt="Bot" />
+                  </div>
+                  <div className="message-bubble shimmer-bubble">
+                    <div className="shimmer-bar shimmer-bar-1"></div>
+                    <div className="shimmer-bar shimmer-bar-2"></div>
+                    <div className="shimmer-bar shimmer-bar-3"></div>
+                  </div>
+                  <div className="timestamp bot-timestamp-left">{getTime()}</div>
+                </div>
+              )}
 
               <div ref={messagesEndRef} />
             </div>
           </div>
- 
+
           <div className="chatbot-input">
             <input
               type="text"
@@ -288,7 +295,5 @@ const formatBotReply = (text) => {
     </>
   );
 };
- 
+
 export default Chatbot;
- 
- 
