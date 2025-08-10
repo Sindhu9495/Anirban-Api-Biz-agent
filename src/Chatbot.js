@@ -4,6 +4,13 @@ import './Chatbot.css';
 import strings from './chatbotStrings.json';
 import Healthcare from './Healthcare';
 
+// Move constants outside the component for stable references
+const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
+const headers = {
+  'Content-Type': 'application/json',
+  api_token: '552a73ba-62dd-4472-b3c6-240711042720269',
+};
+
 const Chatbot = () => {
   const getTime = () =>
     new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -22,12 +29,6 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showHealthcareUI, setShowHealthcareUI] = useState(false);
   const messagesEndRef = useRef(null);
-
-  const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
-  const headers = {
-    'Content-Type': 'application/json',
-    api_token: '552a73ba-62dd-4472-b3c6-240711042720269',
-  };
 
   const healthcareKeywords = [
     'hcp', 'healthcare', 'clinical', 'medical', 'prescriber', 'conference', 'symptom', 'treatment',
@@ -57,7 +58,7 @@ const Chatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [apiUrl, headers]);
+  }, []); // Removed apiUrl and headers from deps because they're stable now
 
   const registerMCPChannel = async () => {
     const endpoint = 'https://200ok-mcp-e6drfqhhewfjhwhk.canadacentral-01.azurewebsites.net/200OK/MCP/register-channel';
