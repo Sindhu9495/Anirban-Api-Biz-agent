@@ -6,7 +6,7 @@ import strings from './chatbotStrings.json';
 const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/services/apexrest/AI_Copilot/api/v1.0/';
 const headers = {
   'Content-Type': 'application/json',
-  'api_token': '552a73ba-62dd-4472-b3c6-240711042720269',
+ // 'api_token': '552a73ba-62dd-4472-b3c6-240711042720269',
 };
 
 const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
