@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './Chatbot.css';
 import strings from './chatbotStrings.json';
@@ -13,7 +13,6 @@ const getTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minut
 const formatBotReply = (text) => `<p>${text}</p>`;
 
 const Chatbot = () => {
-  const [triggeredPrompt, setTriggeredPrompt] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState([
@@ -29,8 +28,9 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleBotResponse = useCallback(async (userMessage) => {
+  const handleBotResponse = async (userMessage) => {
     setIsLoading(true);
+
     try {
       const requestBody = {
         configAiName: 'OpenAI',
@@ -39,9 +39,14 @@ const Chatbot = () => {
       };
 
       const response = await axios.post(apiUrl, requestBody, { headers });
-      const botReply = formatBotReply(response.data.answer || strings.default_reply);
-      setMessages((prev) => [...prev, { type: 'bot', text: botReply, timestamp: getTime() }]);
+      const reply = response.data?.message || response.data?.answer || strings.default_reply;
+
+      setMessages((prev) => [
+        ...prev,
+        { type: 'bot', text: formatBotReply(reply), timestamp: getTime() },
+      ]);
     } catch (error) {
+      console.error('Error fetching response:', error);
       setMessages((prev) => [
         ...prev,
         { type: 'bot', text: formatBotReply(strings.error_response), timestamp: getTime() },
@@ -49,13 +54,14 @@ const Chatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
     const time = getTime();
     const userMessage = input;
     setInput('');
+
     setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
     await handleBotResponse(userMessage);
   };
@@ -72,19 +78,24 @@ const Chatbot = () => {
           { type: 'bot', text: formatBotReply(strings.demo_response), timestamp: getTime() },
         ]);
       } else {
-        const response = await axios.post(apiUrl, {
-          configAiName: 'OpenAI',
-          promptQuery: text,
-          dataSourceApiName: 'Order_&_Invoice_Details',
-        }, { headers });
+        const response = await axios.post(
+          apiUrl,
+          {
+            configAiName: 'OpenAI',
+            promptQuery: text,
+            dataSourceApiName: 'Order_&_Invoice_Details',
+          },
+          { headers }
+        );
 
-        const botReply = formatBotReply(response.data.answer || `You selected: ${text}. Let me assist you with that.`);
+        const reply = response.data?.message || response.data?.answer || `You selected: ${text}.`;
         setMessages((prev) => [
           ...prev,
-          { type: 'bot', text: botReply, timestamp: getTime() },
+          { type: 'bot', text: formatBotReply(reply), timestamp: getTime() },
         ]);
       }
     } catch (error) {
+      console.error('Error on button click:', error);
       setMessages((prev) => [
         ...prev,
         { type: 'bot', text: formatBotReply(strings.error_response), timestamp: getTime() },
@@ -93,17 +104,6 @@ const Chatbot = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (triggeredPrompt) {
-      const time = getTime();
-      const userMessage = triggeredPrompt;
-
-      setMessages((prev) => [...prev, { type: 'user', text: userMessage, timestamp: time }]);
-      handleBotResponse(userMessage);
-      setTriggeredPrompt(null);
-    }
-  }, [triggeredPrompt, handleBotResponse]);
 
   const togglePopup = () => setIsOpen(!isOpen);
   const toggleExpand = () => setIsExpanded(!isExpanded);
