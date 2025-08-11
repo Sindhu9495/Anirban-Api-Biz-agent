@@ -1,3 +1,7 @@
+[build]
+  publish = "build"
+  command = "npm run build"
+
 [[redirects]]
   from = "/api/*"
   to = "https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/:splat"
@@ -6,5 +10,5 @@
   headers = { 
     Access-Control-Allow-Origin = "*", 
     Access-Control-Allow-Headers = "Content-Type, api_token", 
-    Access-Control-Allow-Methods = "POST, OPTIONS"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
   }
