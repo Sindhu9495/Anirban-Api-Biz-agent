@@ -7,8 +7,10 @@
   to = "https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/:splat"
   status = 200
   force = true
-  headers = { 
-    Access-Control-Allow-Origin = "*", 
-    Access-Control-Allow-Headers = "Content-Type, api_token", 
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, api_token"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-  }
