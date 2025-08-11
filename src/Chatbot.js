@@ -62,7 +62,11 @@ const Chatbot = () => {
     };
 
     try {
-      const response = await axios.post(endpoint, body, { headers: { 'Content-Type': 'application/json' } });
+const response = await axios.post(apiUrl, {
+  configAiName: 'OpenAI',
+  promptQuery: prompt,
+  dataSourceApiName: 'Order_&_Invoice_Details',
+}, { headers });
       const resultText = `✅ Channel registered successfully:\n${JSON.stringify(response.data, null, 2)}`;
       setMessages((prev) => [...prev, { type: 'bot', text: formatBotReply(resultText), timestamp: getTime() }]);
     } catch (error) {
