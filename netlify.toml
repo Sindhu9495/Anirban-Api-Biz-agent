@@ -1,10 +1,10 @@
 [[redirects]]
-  from = "/services/*"
-  to = "https://power-customer-6271-dev-ed.scratch.my.salesforce-sites.com/services/:splat"
+  from = "/api/*"
+  to = "https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.com/:splat"
   status = 200
   force = true
-
-  [redirects.headers]
-    Access-Control-Allow-Origin = "*"
+  headers = { 
+    Access-Control-Allow-Origin = "*", 
+    Access-Control-Allow-Headers = "Content-Type, api_token", 
     Access-Control-Allow-Methods = "POST, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+  }
