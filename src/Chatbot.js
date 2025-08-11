@@ -13,7 +13,7 @@ const apiUrl = 'https://force-velocity-9211-dev-ed.scratch.my.salesforce-sites.c
 const headers = {
   'Content-Type': 'application/json',
   // Add token here if required
-  'api-token': '552a73ba-62dd-4472-b3c6-240711042720269',
+  'api_token': '552a73ba-62dd-4472-b3c6-240711042720269',
 };
 
 const healthcareKeywords = [
