@@ -1,0 +1,167 @@
+.bfsi-dashboard {
+  font-family: 'Poppins', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+/* Header Section */
+.bfsi-dashboard .header-section {
+  position: relative;
+  overflow: hidden;
+  
+  background:linear-gradient(135deg, #430cc1 0%, #ffff 100%);
+  padding: 2rem;
+  border-radius: 2rem;
+  text-align: center;
+  color: white;
+  margin-top: 30px;
+}
+
+.bfsi-dashboard .header-section h1 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Bot image */
+.bfsi-dashboard .agentforce-flying {
+  position: absolute;
+  top: -10px;
+  right: -20px;
+  height: 260px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+/* Search bar */
+.bfsi-dashboard .search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+}
+
+.bfsi-dashboard .search-bar img {
+  width: 24px;
+  height: 24px;
+  margin-right: 0.5rem;
+}
+
+.bfsi-dashboard .search-bar input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 2rem;
+}
+
+/* Search send button */
+.bfsi-dashboard .search-send-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+}
+
+.bfsi-dashboard .arrow-icon {
+  font-size: 22px;
+  color: #430cc1; /* Gradient purple tone */
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.bfsi-dashboard .search-send-button:hover .arrow-icon { transform: scale(1.2); }
+.bfsi-dashboard .search-send-button:active .arrow-icon { transform: scale(1.4); }
+
+/* Prompt buttons */
+.bfsi-dashboard .prompt-buttons {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bfsi-dashboard .prompt-button {
+  background-color: #430cc1; /* Gradient purple tone */
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border 0.2s;
+}
+
+.bfsi-dashboard .prompt-button:hover,
+.bfsi-dashboard .prompt-button.selected {
+  background-color: white;
+  color: #a18cd1;
+  border: 2px solid #a18cd1;
+}
+
+/* Announcements */
+.bfsi-dashboard .announcement-section { margin-top: 2rem; }
+.bfsi-dashboard .announcement-section h2 { margin: 0 0 1rem 0; }
+
+.bfsi-dashboard .announcement-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 per row */
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.bfsi-dashboard .announcement-card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.bfsi-dashboard .announcement-card:hover { transform: translateY(-5px); }
+
+.bfsi-dashboard .card-top-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.bfsi-dashboard .card-content { padding: 1rem; }
+.bfsi-dashboard .card-content .date {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+.bfsi-dashboard .card-content .title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #222;
+}
+.bfsi-dashboard .card-content .description { font-size: 0.85rem; color: #444; }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .bfsi-dashboard .header-section { padding: 1.5rem; }
+  .bfsi-dashboard .agentforce-flying { height: 180px; top: -20px; right: -40px; opacity: 0.9; }
+  .bfsi-dashboard .header-section h1 { font-size: 1.5rem; }
+  .bfsi-dashboard .announcement-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
