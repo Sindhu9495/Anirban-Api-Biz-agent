@@ -1,24 +1,48 @@
+// App.js
 import React, { useState } from 'react';
-import { ChatContext } from './ChatContext';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+import { ChatProvider } from './ChatContext';
 import Chatbot from './Chatbot';
-import Healthcare from './Healthcare';
-import { Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar';
+
+import Healthcare from './Healthcare';
+import BFSI from './BFSI';
+import Hitech from './Hitech';
+import Retail from './Retail';
+import Logistics from './Logistics';
+
 function App() {
-  const [triggeredPrompt, setTriggeredPrompt] = useState(null);
+  const [chatState, setChatState] = useState({
+    isOpen: false,
+    isExpanded: false,
+  });
 
   return (
-    <ChatContext.Provider value={{ triggeredPrompt, setTriggeredPrompt }}>
+    <ChatProvider>
       <Navbar />
+
       <Routes>
-        <Route path="/" element={<Healthcare />} />
-        <Route path="/healthcare" element={<Healthcare />} />
+        {/* Home -> Healthcare */}
+        <Route path="/" element={<Navigate to="/healthcare" replace />} />
 
+        <Route path="/healthcare" element={<Healthcare setChatState={setChatState} />} />
+        <Route path="/bfsi" element={<BFSI setChatState={setChatState} />} />
+        <Route path="/logistics" element={<Logistics setChatState={setChatState} />} />
+        <Route path="/hi-tech" element={<Hitech setChatState={setChatState} />} />
+        <Route path="/digital-commerce" element={<Retail setChatState={setChatState} />} />
 
-        <Route path="/chat" element={<Chatbot />} />
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/healthcare" replace />} />
       </Routes>
-      <Chatbot />
-    </ChatContext.Provider>
+
+      {/* Chatbot mounted once */}
+      <Chatbot
+        isOpen={chatState.isOpen}
+        isExpanded={chatState.isExpanded}
+        setChatState={setChatState}
+      />
+    </ChatProvider>
   );
 }
 
